@@ -45,15 +45,15 @@ fi
 # set resource group name
 # if you have exsiting one please use the one
 num=$(shuf -i0-1000 -n1)
-rgName=azhol-$num-rg #Save it as ps1
+rgName=azlab-$num-rg #Save it as ps1
 # set azure region
 loc=westus
 # set blob name that should be unique 
-blobName=blobdev$num # It will be saved it in parameter file
+blobName=azlab$num # It will be saved it in parameter file
 # set container name that will be created in Blob
 containerName=sampledata
 # set SQL Server (Instance) name
-sqlsvrName=dev$num # It will be saved it in parameter file
+sqlsvrName=azlab$num # It will be saved it in parameter file
 # DO NOT CHANGE!!!
 sqldbName=customerdb
 # DO NOT CHANGE!!!
@@ -79,11 +79,11 @@ az storage container create --name $containerName --connection-string $blobConn
 # Create a DB and restore Database from backup
 # Download Sample DB (Backup)
 echo "4. Download a sample DB"
-file_to_upload="./wwimdb.bacpac"
-objName=wwimdb.bacpac
+file_to_upload="./customerchurn_sqldb"
+objName=customerchurn_sqldb
 # wget is tool you can download files
 # Cloud Shell has wget.exe on both Bash or Powershell 
-wget -O $file_to_upload https://github.com/xlegend1024/az-cloudscale-adv-analytics/raw/master/sampledb/wwimdb.bacpac 
+wget -O $file_to_upload https://github.com/xlegend1024/az-adv-analytics-hol/raw/master/sqldb/sampledb/customerchurn_sqldb.bacpac
 
 # Uploading a SQLDB Backup file
 echo "5. Upload sample db to blob"
@@ -113,20 +113,20 @@ sas=$(az storage blob generate-sas --account-name $blobName --container-name $co
 echo "9. Restore DB"
 az sql db import -s $sqlsvrName -n $sqldbName -g $rgName -p $sqlpwd -u $sqladm --storage-key $sas --storage-key-type SharedAccessKey --storage-uri $bloburi
 
-# Create keyvault
-## Steps
+# # Create keyvault
+# ## Steps
 
-## 1. Retrieve data factory service identity by copying the value of "SERVICE IDENTITY APPLICATION ID" generated along with your factory. If you use ADF authoring UI, the service identity ID will be shown on the Azure Key Vault linked service creation window; you can also retrieve it from Azure portal, refer to Retrieve data factory service identity.
-## 2. Grant the service identity access to your Azure Key Vault. In your key vault -> Access policies -> Add new -> search this service identity application ID to grant Get permission in Secret permissions dropdown. It allows this designated factory to access secret in key vault.
-## 3. Create a linked service pointing to your Azure Key Vault. Refer to Azure Key Vault linked service.
-## 4. Create data store linked service, inside which reference the corresponding secret stored in key vault. Refer to reference secret stored in key vault.
+# ## 1. Retrieve data factory service identity by copying the value of "SERVICE IDENTITY APPLICATION ID" generated along with your factory. If you use ADF authoring UI, the service identity ID will be shown on the Azure Key Vault linked service creation window; you can also retrieve it from Azure portal, refer to Retrieve data factory service identity.
+# ## 2. Grant the service identity access to your Azure Key Vault. In your key vault -> Access policies -> Add new -> search this service identity application ID to grant Get permission in Secret permissions dropdown. It allows this designated factory to access secret in key vault.
+# ## 3. Create a linked service pointing to your Azure Key Vault. Refer to Azure Key Vault linked service.
+# ## 4. Create data store linked service, inside which reference the corresponding secret stored in key vault. Refer to reference secret stored in key vault.
 
-echo "10. Create Azure Key Vault"
-az keyvault create --name $avkName --resource-group $rgName --location $loc
+# echo "10. Create Azure Key Vault"
+# az keyvault create --name $avkName --resource-group $rgName --location $loc
 
-sqldbconn='Server=tcp:'$sqlsvrName'.database.windows.net,1433;Database=wwimdb;User ID=sqladmin;Password='$sqlpwd';Encrypt=true;Connection Timeout=30;'
+# sqldbconn='Server=tcp:'$sqlsvrName'.database.windows.net,1433;Database=wwimdb;User ID=sqladmin;Password='$sqlpwd';Encrypt=true;Connection Timeout=30;'
 
-az keyvault secret set --vault-name $avkName --name 'dev-sqldbconn' --value '$sqldbconn'
+# az keyvault secret set --vault-name $avkName --name 'dev-sqldbconn' --value '$sqldbconn'
 
 echo "SubscriptionID: " $subId
 echo "Tenant ID:" $tenantId
@@ -137,4 +137,4 @@ echo "SQL Server:" $sqlsvrName
 echo "SQL Database:" $sqladm
 echo "Your Resource Group Name is: " $rgName
 echo "You SQL DB Password is:      " $sqlpwd
-echo $sqldbconn
+# echo $sqldbconn
