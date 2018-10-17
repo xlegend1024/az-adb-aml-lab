@@ -79,8 +79,8 @@ az storage container create --name $containerName --connection-string $blobConn
 # Create a DB and restore Database from backup
 # Download Sample DB (Backup)
 echo "4. Download a sample DB"
-file_to_upload="./customerchurn_sqldb"
-objName=customerchurn_sqldb
+file_to_upload="./customerchurn_sqldb.bacpac"
+objName=customerchurn_sqldb.bacpac
 # wget is tool you can download files
 # Cloud Shell has wget.exe on both Bash or Powershell 
 wget -O $file_to_upload https://github.com/xlegend1024/az-adv-analytics-hol/raw/master/sqldb/sampledb/customerchurn_sqldb.bacpac
