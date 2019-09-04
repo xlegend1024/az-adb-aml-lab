@@ -6,7 +6,7 @@
 
 ### 01.01. Create Databricks
 
-### 01.02. Import Notebo
+### 01.02. Import Notebook
 
 ## 02. Data Science
 
